@@ -1,21 +1,34 @@
 import cv2
+import numpy as np
 
+# read the image
 image = cv2.imread("./image.jpg")
 
 height = image.shape[0]
 width = image.shape[1]
 
-# only integer is accepted
-pt1x = int(width/2)
-pt1y = 0
-pt2x = pt1x
-pt2y = height
-cv2.line(image, (pt1x, pt1y), (pt2x, pt2y), (0, 0, 0), 4)
+# creat a white paper with lines
+paper = np.zeros((height, width, 3), np.uint8)
+paper.fill(255)
 
-pt1x = 0
-pt1y = int(height/2)
-pt2x = width
-pt2y = pt1y
-cv2.line(image, (pt1x, pt1y), (pt2x, pt2y), (0, 0, 0), 4)
+# how may lines 
+lines = int(input("how may lines for each: "))
 
-cv2.imwrite("./export.jpg", image)
+for i in range(lines):
+    # only integer is accepted
+    pt1x = int(width / (lines + 1)) * (i + 1)
+    pt1y = 0
+    pt2x = pt1x
+    pt2y = height
+    cv2.line(image, (pt1x, pt1y), (pt2x, pt2y), (0, 0, 0), 4)
+    cv2.line(paper, (pt1x, pt1y), (pt2x, pt2y), (0, 0, 0), 4)
+
+    pt1x = 0
+    pt1y = int(height/ (lines + 1)) * (i + 1)
+    pt2x = width
+    pt2y = pt1y
+    cv2.line(image, (pt1x, pt1y), (pt2x, pt2y), (0, 0, 0), 4)
+    cv2.line(paper, (pt1x, pt1y), (pt2x, pt2y), (0, 0, 0), 4)
+
+
+cv2.imwrite("./export.jpg", cv2.hconcat([paper, image]))
